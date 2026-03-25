@@ -12,7 +12,6 @@ import {
   serializeVNodeToHtml,
   serializeVNodeToText,
 } from '../lib/vdom.js';
-import { describeMutation } from '../ui/formatters.js';
 
 const AUTO_COMMIT_DELAY_MS = 250;
 
@@ -310,36 +309,6 @@ export function mountInitialState({ refs, state }) {
   state.workingTree = cloneVNode(initialTree);
   state.parseError = '';
   state.statusMessage = '브라우저 DOM을 읽어 첫 번째 Virtual DOM과 Fiber 기준선을 만들었습니다.';
-}
-
-/**
- * actual DOM의 실제 변경을 MutationObserver로 기록해 피드 패널에 쌓는다.
- *
- * @param {{refs: object, state: object, render: Function}} params - observer가 갱신할 상태와 렌더 함수.
- * @returns {void}
- */
-export function attachMutationFeed({ refs, state, render }) {
-  const observer = new MutationObserver((records) => {
-    const entries = records.map((record) => ({
-      id: `${record.type}-${record.target.nodeName}-${Math.random().toString(16).slice(2)}`,
-      time: Date.now(),
-      text: describeMutation(record),
-    }));
-
-    if (!entries.length) {
-      return;
-    }
-
-    state.mutationFeed = [...entries.reverse(), ...state.mutationFeed].slice(0, 14);
-    render();
-  });
-
-  observer.observe(refs.actual, {
-    subtree: true,
-    childList: true,
-    attributes: true,
-    characterData: true,
-  });
 }
 
 /**

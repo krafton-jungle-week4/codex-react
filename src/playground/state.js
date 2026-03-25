@@ -16,7 +16,6 @@ export function createAppState() {
     parseError: '',
     autoCommitEnabled: false,
     lastCommitEffects: [],
-    mutationFeed: [],
     statusMessage: '실제 DOM을 초기화하고 있습니다.',
   };
 }

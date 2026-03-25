@@ -56,24 +56,6 @@ export function describeEffect(effect) {
 }
 
 /**
- * MutationObserver 레코드를 사람이 읽기 쉬운 로그 문장으로 바꾼다.
- *
- * @param {MutationRecord} record - 브라우저가 전달한 mutation 레코드.
- * @returns {string} 로그 패널에 보여줄 설명 문자열.
- */
-export function describeMutation(record) {
-  if (record.type === 'attributes') {
-    return `${record.attributeName} 속성이 변경되었습니다.`;
-  }
-
-  if (record.type === 'characterData') {
-    return '텍스트 노드가 수정되었습니다.';
-  }
-
-  return `자식 노드 ${record.addedNodes.length}개 추가, ${record.removedNodes.length}개 제거`;
-}
-
-/**
  * 트리 패널에 보여줄 vnode 라벨 문자열을 만든다.
  *
  * @param {object} node - 라벨링할 vnode.

@@ -1,4 +1,4 @@
-import { bindEvents, attachMutationFeed, mountInitialState } from './playground/actions.js';
+import { bindEvents, mountInitialState } from './playground/actions.js';
 import { createAppState } from './playground/state.js';
 import { renderPanels } from './ui/renderPanels.js';
 import { getAppShell, getRefs } from './ui/shell.js';
@@ -19,6 +19,5 @@ export function initApp(container) {
 
   bindEvents({ refs, state, render });
   mountInitialState({ refs, state });
-  attachMutationFeed({ refs, state, render });
   render();
 }

@@ -329,7 +329,6 @@ button {
 }
 
 .tree-shell,
-.mutation-feed,
 .patch-list,
 .history-list,
 .json-viewer {
@@ -345,7 +344,6 @@ button {
 .tree-node,
 .tree-leaf,
 .patch-item,
-.mutation-item,
 .history-item,
 .empty-state {
   border-radius: var(--radius-md);
@@ -405,7 +403,6 @@ button {
 }
 
 .patch-item,
-.mutation-item,
 .empty-state {
   padding: 14px 16px;
 }
@@ -497,19 +494,8 @@ button {
 }
 
 .history-item small,
-.mutation-item span,
 .empty-state strong {
   color: var(--muted);
-}
-
-.mutation-item {
-  display: grid;
-  gap: 3px;
-}
-
-.mutation-item strong {
-  font-size: 0.8rem;
-  color: var(--accent-strong);
 }
 
 .mini-chip-row {

@@ -2,7 +2,7 @@
 
 `Virtual DOM Diff Lab`은 브라우저 DOM을 직접 읽어 Virtual DOM으로 변환하고, 이전 상태와 다음 상태를 비교해 실제 DOM에 필요한 변경만 반영하는 과정을 시각적으로 확인할 수 있는 학습용 playground입니다.
 
-이 프로젝트는 단순히 결과 화면을 렌더링하는 데서 끝나지 않고, `diff`, `effect queue`, `commit`, `history`, `mutation log`까지 한 번에 확인할 수 있도록 구성되어 있습니다.
+이 프로젝트는 단순히 결과 화면을 렌더링하는 데서 끝나지 않고, `diff`, `effect queue`, `commit`, `history`까지 한 번에 확인할 수 있도록 구성되어 있습니다.
 
 ## Features
 
@@ -14,7 +14,6 @@
 - 실제 DOM 반영 전후 상태를 분리해서 확인 가능
 - HTML 편집 모드와 VDOM(JSON) 편집 모드 제공
 - Commit history 기반 Undo / Redo 지원
-- MutationObserver로 실제 DOM 변경 로그 추적
 
 ## How It Works
 
@@ -24,7 +23,7 @@
 2. 현재 commit된 트리와 작업 중인 트리를 비교합니다.
 3. 비교 결과를 Fiber effect queue 형태로 정리합니다.
 4. `commitRoot`가 effect queue를 실제 DOM 연산으로 실행합니다.
-5. 변경 결과는 History와 Mutation Feed에 기록됩니다.
+5. 변경 결과는 History에 기록됩니다.
 
 즉, `계산(reconcile)`과 `반영(commit)`을 분리해서 볼 수 있다는 점이 핵심입니다.
 
@@ -61,8 +60,6 @@
   - 사용자가 수정 중인 다음 Virtual DOM 트리
 - `Snapshots`
   - commit 단위 이력 이동
-- `MutationObserver Feed`
-  - 실제 DOM 변경 로그 확인
 
 ## Core APIs
 
@@ -104,7 +101,7 @@
 - [`src/playground/actions.js`](./src/playground/actions.js)
   - playground 상태 흐름, commit, history, auto-commit 제어
 - [`src/ui/renderPanels.js`](./src/ui/renderPanels.js)
-  - effect, tree, history, mutation feed 패널 렌더링
+  - effect, tree, history 패널 렌더링
 
 ## Run
 

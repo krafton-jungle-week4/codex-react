@@ -86,14 +86,6 @@ export function renderPanels(refs, state) {
       </button>
     `;
   }).join('');
-  refs.mutationFeed.innerHTML = state.mutationFeed.length
-    ? state.mutationFeed.map((entry) => `
-        <div class="mutation-item">
-          <strong>${formatTime(entry.time)}</strong>
-          <span>${escapeHtml(entry.text)}</span>
-        </div>
-      `).join('')
-    : getEmptyState('Mutation log', 'Commit 또는 History 이동 후 실제 DOM 변경 기록이 여기에 쌓입니다.');
 }
 
 /**

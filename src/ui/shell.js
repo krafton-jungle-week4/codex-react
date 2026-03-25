@@ -136,15 +136,6 @@ export function getAppShell() {
           <div class="history-list" data-role="history-list"></div>
         </article>
 
-        <article class="panel">
-          <header class="panel-head">
-            <div>
-              <p class="panel-kicker">Browser API</p>
-              <h2>MutationObserver Feed</h2>
-            </div>
-          </header>
-          <div class="mutation-feed" data-role="mutation-feed"></div>
-        </article>
       </section>
     </main>
   `;
@@ -180,7 +171,6 @@ export function getRefs(container) {
     committedTree: container.querySelector('[data-role="committed-tree"]'),
     workingTree: container.querySelector('[data-role="working-tree"]'),
     historyList: container.querySelector('[data-role="history-list"]'),
-    mutationFeed: container.querySelector('[data-role="mutation-feed"]'),
     insertStat: container.querySelector('[data-role="stat-insert"]'),
     removeStat: container.querySelector('[data-role="stat-remove"]'),
     moveStat: container.querySelector('[data-role="stat-move"]'),
