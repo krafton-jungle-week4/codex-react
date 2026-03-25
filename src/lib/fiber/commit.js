@@ -7,13 +7,17 @@ import {
 // reconciliation 이후 준비된 effect 큐를 실제 DOM 연산으로 실행하는 유일한 fiber 모듈이다.
 
 /**
- * 준비된 fiber effect 큐를 commit 순서대로 실제 DOM에 반영한다.
+ * reconciliation 단계에서 계산된 effect queue를 안전한 순서로 정렬한 뒤 실제 DOM에 반영한다.
+ *
+ * `reconcileTrees`가 변경 계획을 만드는 함수라면, 이 함수는 그 계획을 실행하는 commit 진입점이다.
+ * 삭제, 이동, 삽입, 속성 변경, 텍스트 변경을 순차적으로 수행해 최종 DOM을 다음 트리 상태에 맞춘다.
+ * 호출이 끝나면 전달된 `container` 아래의 실제 DOM은 effect queue가 의도한 결과와 동기화된다.
  *
  * @param {Element} container - 실제 렌더 트리의 루트 DOM 컨테이너.
- * @param {{effects?: object[]}} rootFiber - `reconcileTrees`가 반환한 루트 fiber.
+ * @param {{effects?: object[]}} rootFiber - `reconcileTrees`가 반환한 루트 fiber. 내부 `effects` 배열을 기준으로 commit한다.
  * @returns {void}
  *
- * @remarks 이 함수는 실제 DOM을 변경한다. reconciliation이 끝난 뒤에만 호출해야 한다.
+ * @remarks 이 함수는 실제 DOM을 직접 변경하므로, 반드시 reconciliation이 끝난 뒤에만 호출해야 한다.
  */
 export function commitRoot(container, rootFiber) {
   const orderedEffects = sortEffectsForCommit(rootFiber.effects || []);

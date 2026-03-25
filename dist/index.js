@@ -1,8 +1,8 @@
-import { reconcileTrees as x, commitRoot as $, summarizeCommitOperations as L, formatFiberPath as D } from "./fiber.js";
-import { ChildDeletion as et, NoFlags as at, Placement as ot, Update as rt, getFlagNames as st } from "./fiber.js";
-import { domNodeToVNodeTree as v, cloneVNode as u, mountVNode as p, parseVdomTextToVNode as O, parseHtmlToVNode as P, serializeVNodeToHtml as N, serializeVNodeToText as q, createRootVNode as w, countVNodeStats as M } from "./vdom.js";
-import { domNodeToVNode as nt, getVNodeKey as lt, removeDomAttribute as dt, renderVNode as ct, setDomAttribute as ut } from "./vdom.js";
-const H = `
+import { reconcileTrees as w, commitRoot as q, summarizeCommitOperations as H, formatFiberPath as N } from "./fiber.js";
+import { ChildDeletion as it, NoFlags as lt, Placement as st, Update as dt, getFlagNames as nt } from "./fiber.js";
+import { domNodeToVNodeTree as v, cloneVNode as u, mountVNode as p, parseVdomTextToVNode as P, parseHtmlToVNode as V, serializeVNodeToHtml as B, serializeVNodeToText as A, createRootVNode as $, countVNodeStats as f } from "./vdom.js";
+import { domNodeToVNode as ut, getVNodeKey as mt, removeDomAttribute as pt, renderVNode as ht, setDomAttribute as vt } from "./vdom.js";
+const I = `
 <section class="demo-card" data-key="dashboard">
   <header class="hero-block">
     <p class="eyebrow">Virtual DOM Playground</p>
@@ -41,18 +41,18 @@ const H = `
     <small>리스트 순서를 바꾸거나 새로운 태그를 추가해 Patch를 눌러보세요.</small>
   </footer>
 </section>
-`, V = new Intl.DateTimeFormat("ko-KR", {
+`, F = new Intl.DateTimeFormat("ko-KR", {
   hour: "2-digit",
   minute: "2-digit",
   second: "2-digit"
 });
-function T(t) {
-  return V.format(t);
+function S(t) {
+  return F.format(t);
 }
 function c(t) {
   return String(t).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
-function A(t) {
+function j(t) {
   switch (t.opType) {
     case "INSERT_CHILD":
       return `index ${t.index} 위치에 새 노드를 삽입합니다.`;
@@ -61,8 +61,8 @@ function A(t) {
     case "REMOVE_CHILD":
       return `index ${t.index} 자식 노드를 제거합니다.`;
     case "UPDATE_PROPS": {
-      const e = Object.keys(t.payload.set || {}), a = t.payload.remove || [];
-      return `props 변경: set ${e.join(", ") || "-"} / remove ${a.join(", ") || "-"}`;
+      const e = Object.keys(t.payload.set || {}), o = t.payload.remove || [];
+      return `props 변경: set ${e.join(", ") || "-"} / remove ${o.join(", ") || "-"}`;
     }
     case "UPDATE_TEXT":
       return `텍스트를 "${t.value}" 로 갱신합니다.`;
@@ -70,133 +70,147 @@ function A(t) {
       return "설명할 수 없는 effect입니다.";
   }
 }
-function B(t) {
+function R(t) {
   return t.type === "attributes" ? `${t.attributeName} 속성이 변경되었습니다.` : t.type === "characterData" ? "텍스트 노드가 수정되었습니다." : `자식 노드 ${t.addedNodes.length}개 추가, ${t.removedNodes.length}개 제거`;
 }
-function I(t) {
+function J(t) {
   if (t.type === "root")
     return "root";
   if (t.type === "text")
     return `"${t.value.replace(/\s+/g, " ").trim() || "(whitespace)"}"`;
-  const e = Object.entries(t.attrs || {}).slice(0, 3).map(([a, o]) => o === "" ? a : `${a}="${o}"`).join(" ");
+  const e = Object.entries(t.attrs || {}).slice(0, 3).map(([o, a]) => a === "" ? o : `${o}="${a}"`).join(" ");
   return e ? `<${t.tag} ${e}>` : `<${t.tag}>`;
 }
-const b = 250;
-function F({ refs: t, state: e, render: a }) {
-  let o = null;
-  const i = (s) => {
-    s.target.closest('[data-role="sample-button"]') && j({ refs: t, state: e, render: a });
+const T = 250;
+function _({ refs: t, state: e, render: o }) {
+  let a = null;
+  const i = () => e.editorMode === "vdom" ? t.vdomEditor : t.editor, d = () => {
+    const r = i();
+    t.editorModalTextarea.value !== r.value && (t.editorModalTextarea.value = r.value);
+  }, s = (r) => {
+    r.target.closest('[data-role="sample-button"]') && U({ refs: t, state: e, render: o });
   };
   t.editor.addEventListener("input", () => {
-    k({
+    C({
       refs: t,
       state: e,
-      render: a,
+      render: o,
       mode: "html",
       rawValue: t.editor.value,
-      autoCommitTimerRef: () => o,
-      setAutoCommitTimer: (s) => {
-        o = s;
+      autoCommitTimerRef: () => a,
+      setAutoCommitTimer: (r) => {
+        a = r;
       }
     });
   }), t.vdomEditor.addEventListener("input", () => {
-    k({
+    C({
       refs: t,
       state: e,
-      render: a,
+      render: o,
       mode: "vdom",
       rawValue: t.vdomEditor.value,
-      autoCommitTimerRef: () => o,
-      setAutoCommitTimer: (s) => {
-        o = s;
+      autoCommitTimerRef: () => a,
+      setAutoCommitTimer: (r) => {
+        a = r;
       }
     });
-  }), t.testPreview.addEventListener("input", (s) => {
-    E(s.target) && S({ refs: t, state: e, render: a, autoCommitTimerRef: () => o, setAutoCommitTimer: (r) => {
-      o = r;
+  }), t.testPreview.addEventListener("input", (r) => {
+    k(r.target) && x({ refs: t, state: e, render: o, autoCommitTimerRef: () => a, setAutoCommitTimer: (l) => {
+      a = l;
     } });
-  }), t.testPreview.addEventListener("change", (s) => {
-    E(s.target) && S({ refs: t, state: e, render: a, autoCommitTimerRef: () => o, setAutoCommitTimer: (r) => {
-      o = r;
+  }), t.testPreview.addEventListener("change", (r) => {
+    k(r.target) && x({ refs: t, state: e, render: o, autoCommitTimerRef: () => a, setAutoCommitTimer: (l) => {
+      a = l;
     } });
-  }), t.testPreview.addEventListener("click", i), t.editorModeButtons.forEach((s) => {
-    s.addEventListener("click", () => {
-      const r = s.dataset.mode;
-      r !== "html" && r !== "vdom" || e.editorMode !== r && (e.editorMode = r, e.statusMessage = r === "vdom" ? "VDOM 편집 모드로 전환했습니다." : "HTML 편집 모드로 전환했습니다.", a());
+  }), t.testPreview.addEventListener("click", s), t.editorModeButtons.forEach((r) => {
+    r.addEventListener("click", () => {
+      const l = r.dataset.mode;
+      l !== "html" && l !== "vdom" || e.editorMode !== l && (e.editorMode = l, e.statusMessage = l === "vdom" ? "VDOM 편집 모드로 전환했습니다." : "HTML 편집 모드로 전환했습니다.", o(), e.isEditorModalOpen && (d(), t.editorModalTextarea.focus()));
     });
+  }), t.editorExpandButton.addEventListener("click", () => {
+    e.isEditorModalOpen = !0, d(), o(), t.editorModalTextarea.focus();
+  }), t.editorModalClose.addEventListener("click", () => {
+    e.isEditorModalOpen = !1, o();
+  }), t.editorModalBackdrop.addEventListener("click", () => {
+    e.isEditorModalOpen = !1, o();
+  }), t.editorModalTextarea.addEventListener("input", () => {
+    const r = i();
+    r.value = t.editorModalTextarea.value, r.dispatchEvent(new Event("input", { bubbles: !0 }));
+  }), document.addEventListener("keydown", (r) => {
+    r.key !== "Escape" || !e.isEditorModalOpen || (e.isEditorModalOpen = !1, o());
   }), t.patchButton.addEventListener("click", () => {
-    o && (clearTimeout(o), o = null), h({ refs: t, state: e, render: a, source: "manual" });
+    a && (clearTimeout(a), a = null), h({ refs: t, state: e, render: o, source: "manual" });
   }), t.autoCommitToggle.addEventListener("change", () => {
-    e.autoCommitEnabled = t.autoCommitToggle.checked, e.statusMessage = e.autoCommitEnabled ? "실시간 commit 모드를 활성화했습니다." : "실시간 commit 모드를 비활성화했습니다.", o && (clearTimeout(o), o = null), e.autoCommitEnabled && !e.parseError && (o = window.setTimeout(() => {
-      h({ refs: t, state: e, render: a, source: "auto" });
-    }, b)), a();
+    e.autoCommitEnabled = t.autoCommitToggle.checked, e.statusMessage = e.autoCommitEnabled ? "실시간 commit 모드를 활성화했습니다." : "실시간 commit 모드를 비활성화했습니다.", a && (clearTimeout(a), a = null), e.autoCommitEnabled && !e.parseError && (a = window.setTimeout(() => {
+      h({ refs: t, state: e, render: o, source: "auto" });
+    }, T)), o();
   }), t.undoButton.addEventListener("click", () => {
-    y(e.historyIndex - 1, { refs: t, state: e, render: a });
+    b(e.historyIndex - 1, { refs: t, state: e, render: o });
   }), t.redoButton.addEventListener("click", () => {
-    y(e.historyIndex + 1, { refs: t, state: e, render: a });
-  }), t.historyList.addEventListener("click", (s) => {
-    const r = s.target.closest("[data-history-index]");
-    r && y(Number(r.dataset.historyIndex), { refs: t, state: e, render: a });
+    b(e.historyIndex + 1, { refs: t, state: e, render: o });
+  }), t.historyList.addEventListener("click", (r) => {
+    const l = r.target.closest("[data-history-index]");
+    l && b(Number(l.dataset.historyIndex), { refs: t, state: e, render: o });
   });
 }
-function h({ refs: t, state: e, render: a, source: o }) {
+function h({ refs: t, state: e, render: o, source: a }) {
   const i = e.history[e.historyIndex];
   if (!i || e.parseError)
     return;
-  const s = u(v(t.testPreview)), r = x(i, s);
-  if (e.lastCommitEffects = r.effects, e.workingTree = u(s), o === "manual" && m(t, e, s), !r.effects.length) {
-    e.statusMessage = o === "auto" ? "자동 commit을 확인했지만 반영할 변경점이 없습니다." : "변경점이 없어 commit 단계를 생략했습니다.", a();
+  const d = u(v(t.testPreview)), s = w(i, d);
+  if (e.lastCommitEffects = s.effects, e.workingTree = u(d), a === "manual" && m(t, e, d), !s.effects.length) {
+    e.statusMessage = a === "auto" ? "자동 commit을 확인했지만 반영할 변경점이 없습니다." : "변경점이 없어 commit 단계를 생략했습니다.", o();
     return;
   }
-  $(t.actual, r.rootFiber);
-  const l = e.history.slice(0, e.historyIndex + 1), n = e.historyMeta.slice(0, e.historyIndex + 1);
-  l.push(u(s)), n.push({
-    label: `${o === "auto" ? "Auto Commit" : "Commit"} #${l.length - 1}`,
-    effectCount: r.effects.length,
+  q(t.actual, s.rootFiber);
+  const r = e.history.slice(0, e.historyIndex + 1), l = e.historyMeta.slice(0, e.historyIndex + 1);
+  r.push(u(d)), l.push({
+    label: `${a === "auto" ? "Auto Commit" : "Commit"} #${r.length - 1}`,
+    effectCount: s.effects.length,
     timestamp: Date.now()
-  }), e.history = l, e.historyMeta = n, e.historyIndex = l.length - 1, e.statusMessage = o === "auto" ? `${r.effects.length}개의 effect를 자동 commit 했습니다.` : `${r.effects.length}개의 effect를 commit 했습니다.`, a();
+  }), e.history = r, e.historyMeta = l, e.historyIndex = r.length - 1, e.statusMessage = a === "auto" ? `${s.effects.length}개의 effect를 자동 commit 했습니다.` : `${s.effects.length}개의 effect를 commit 했습니다.`, o();
 }
-function S({ refs: t, state: e, render: a, autoCommitTimerRef: o, setAutoCommitTimer: i }) {
-  const s = u(v(t.testPreview));
-  e.workingTree = s, e.parseError = "", m(t, e, s), e.statusMessage = e.autoCommitEnabled ? "테스트 영역 입력을 동기화했고 자동 commit을 대기 중입니다." : "테스트 영역 입력을 샘플 HTML 코드와 동기화했습니다.";
-  const r = o();
-  if (r && (clearTimeout(r), i(null)), e.autoCommitEnabled) {
-    const l = window.setTimeout(() => {
-      h({ refs: t, state: e, render: a, source: "auto" });
-    }, b);
-    i(l);
+function x({ refs: t, state: e, render: o, autoCommitTimerRef: a, setAutoCommitTimer: i }) {
+  const d = u(v(t.testPreview));
+  e.workingTree = d, e.parseError = "", m(t, e, d), e.statusMessage = e.autoCommitEnabled ? "테스트 영역 입력을 동기화했고 자동 commit을 대기 중입니다." : "테스트 영역 입력을 샘플 HTML 코드와 동기화했습니다.";
+  const s = a();
+  if (s && (clearTimeout(s), i(null)), e.autoCommitEnabled) {
+    const r = window.setTimeout(() => {
+      h({ refs: t, state: e, render: o, source: "auto" });
+    }, T);
+    i(r);
   }
-  a();
+  o();
 }
-function j({ refs: t, state: e, render: a }) {
-  const o = t.testPreview.querySelector('[data-role="sample-button"]');
-  if (!(o instanceof HTMLButtonElement))
+function U({ refs: t, state: e, render: o }) {
+  const a = t.testPreview.querySelector('[data-role="sample-button"]');
+  if (!(a instanceof HTMLButtonElement))
     return;
-  const i = Number(o.dataset.count ?? "0"), s = Number.isNaN(i) ? 1 : i + 1, r = `Sample Button ${s}`;
-  o.dataset.count = String(s), o.textContent = r;
-  const l = u(v(t.testPreview));
-  e.workingTree = u(l), m(t, e, l), e.parseError = "", e.statusMessage = `Sample Button count를 ${s}로 올렸습니다. Commit Patch 전까지 actual DOM은 유지됩니다.`, a();
+  const i = Number(a.dataset.count ?? "0"), d = Number.isNaN(i) ? 1 : i + 1, s = `Sample Button ${d}`;
+  a.dataset.count = String(d), a.textContent = s;
+  const r = u(v(t.testPreview));
+  e.workingTree = u(r), m(t, e, r), e.parseError = "", e.statusMessage = `Sample Button count를 ${d}로 올렸습니다. Commit Patch 전까지 actual DOM은 유지됩니다.`, o();
 }
-function E(t) {
+function k(t) {
   return t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement || t instanceof HTMLSelectElement;
 }
-function R({ refs: t, state: e }) {
-  t.actual.innerHTML = H;
-  const a = v(t.actual), o = u(a);
-  p(t.actual, a), p(t.testPreview, a), m(t, e, a), e.history = [o], e.historyMeta = [{
+function z({ refs: t, state: e }) {
+  t.actual.innerHTML = I;
+  const o = v(t.actual), a = u(o);
+  p(t.actual, o), p(t.testPreview, o), m(t, e, o), e.history = [a], e.historyMeta = [{
     label: "Initial DOM",
     effectCount: 0,
     timestamp: Date.now()
-  }], e.historyIndex = 0, e.workingTree = u(a), e.parseError = "", e.statusMessage = "브라우저 DOM을 읽어 첫 번째 Virtual DOM과 Fiber 기준선을 만들었습니다.";
+  }], e.historyIndex = 0, e.workingTree = u(o), e.parseError = "", e.statusMessage = "브라우저 DOM을 읽어 첫 번째 Virtual DOM과 Fiber 기준선을 만들었습니다.";
 }
-function _({ refs: t, state: e, render: a }) {
+function K({ refs: t, state: e, render: o }) {
   new MutationObserver((i) => {
-    const s = i.map((r) => ({
-      id: `${r.type}-${r.target.nodeName}-${Math.random().toString(16).slice(2)}`,
+    const d = i.map((s) => ({
+      id: `${s.type}-${s.target.nodeName}-${Math.random().toString(16).slice(2)}`,
       time: Date.now(),
-      text: B(r)
+      text: R(s)
     }));
-    s.length && (e.mutationFeed = [...s.reverse(), ...e.mutationFeed].slice(0, 14), a());
+    d.length && (e.mutationFeed = [...d.reverse(), ...e.mutationFeed].slice(0, 14), o());
   }).observe(t.actual, {
     subtree: !0,
     childList: !0,
@@ -204,47 +218,48 @@ function _({ refs: t, state: e, render: a }) {
     characterData: !0
   });
 }
-function y(t, { refs: e, state: a, render: o }) {
-  if (t < 0 || t >= a.history.length)
+function b(t, { refs: e, state: o, render: a }) {
+  if (t < 0 || t >= o.history.length)
     return;
-  const i = u(a.history[t]);
-  p(e.actual, i), p(e.testPreview, i), a.historyIndex = t, a.workingTree = i, a.parseError = "", a.lastCommitEffects = [], m(e, a, i), a.statusMessage = `히스토리 #${t} 상태로 이동했습니다.`, o();
+  const i = u(o.history[t]);
+  p(e.actual, i), p(e.testPreview, i), o.historyIndex = t, o.workingTree = i, o.parseError = "", o.lastCommitEffects = [], m(e, o, i), o.statusMessage = `히스토리 #${t} 상태로 이동했습니다.`, a();
 }
-function k({
+function C({
   refs: t,
   state: e,
-  render: a,
-  mode: o,
+  render: o,
+  mode: a,
   rawValue: i,
-  autoCommitTimerRef: s,
-  setAutoCommitTimer: r
+  autoCommitTimerRef: d,
+  setAutoCommitTimer: s
 }) {
   try {
-    const n = o === "vdom" ? O(i) : P(i);
-    e.workingTree = n, e.parseError = "", p(t.testPreview, n), m(t, e, n, { preserveModeBuffer: o }), e.statusMessage = o === "vdom" ? e.autoCommitEnabled ? "VDOM 미리보기를 동기화했고 자동 commit을 대기 중입니다." : "VDOM 미리보기를 최신 가상 DOM으로 동기화했습니다." : e.autoCommitEnabled ? "테스트 영역 미리보기를 동기화했고 자동 commit을 대기 중입니다." : "테스트 영역 미리보기를 최신 HTML로 동기화했습니다.";
-  } catch (n) {
-    e.parseError = n instanceof Error ? n.message : o === "vdom" ? "VDOM 파싱 실패" : "HTML 파싱 실패";
+    const l = a === "vdom" ? P(i) : V(i);
+    e.workingTree = l, e.parseError = "", p(t.testPreview, l), m(t, e, l, { preserveModeBuffer: a }), e.statusMessage = a === "vdom" ? e.autoCommitEnabled ? "VDOM 미리보기를 동기화했고 자동 commit을 대기 중입니다." : "VDOM 미리보기를 최신 가상 DOM으로 동기화했습니다." : e.autoCommitEnabled ? "테스트 영역 미리보기를 동기화했고 자동 commit을 대기 중입니다." : "테스트 영역 미리보기를 최신 HTML로 동기화했습니다.";
+  } catch (l) {
+    e.parseError = l instanceof Error ? l.message : a === "vdom" ? "VDOM 파싱 실패" : "HTML 파싱 실패";
   }
-  const l = s();
-  if (l && (clearTimeout(l), r(null)), e.autoCommitEnabled && !e.parseError) {
-    const n = window.setTimeout(() => {
-      h({ refs: t, state: e, render: a, source: "auto" });
-    }, b);
-    r(n);
+  const r = d();
+  if (r && (clearTimeout(r), s(null)), e.autoCommitEnabled && !e.parseError) {
+    const l = window.setTimeout(() => {
+      h({ refs: t, state: e, render: o, source: "auto" });
+    }, T);
+    s(l);
   }
-  a();
+  o();
 }
-function m(t, e, a, o = {}) {
-  const { preserveModeBuffer: i = null } = o, s = N(a), r = q(a);
-  i !== "html" && (t.editor.value = s), i !== "vdom" && (t.vdomEditor.value = r), i === "html" && (t.vdomEditor.value = r), i === "vdom" && (t.editor.value = s);
+function m(t, e, o, a = {}) {
+  const { preserveModeBuffer: i = null } = a, d = B(o), s = A(o);
+  i !== "html" && (t.editor.value = d), i !== "vdom" && (t.vdomEditor.value = s), i === "html" && (t.vdomEditor.value = s), i === "vdom" && (t.editor.value = d);
 }
-function J() {
+function W() {
   return {
     history: [],
     historyMeta: [],
     historyIndex: 0,
-    workingTree: w([]),
+    workingTree: $([]),
     editorMode: "html",
+    isEditorModalOpen: !1,
     parseError: "",
     autoCommitEnabled: !1,
     lastCommitEffects: [],
@@ -252,66 +267,68 @@ function J() {
     statusMessage: "실제 DOM을 초기화하고 있습니다."
   };
 }
-function U(t, e) {
-  const a = e.history[e.historyIndex] || w([]), o = e.parseError ? { effects: [] } : x(a, e.workingTree), i = o.effects.length ? o.effects : e.lastCommitEffects, s = o.effects.length ? "대기 중 Fiber Work" : "마지막 Commit 기록", r = M(a), l = M(e.workingTree), n = L(o.effects);
-  t.patchButton.disabled = !e.history.length || !!e.parseError, t.autoCommitToggle.checked = e.autoCommitEnabled, t.undoButton.disabled = e.historyIndex === 0, t.redoButton.disabled = e.historyIndex === e.history.length - 1, t.editor.classList.toggle("has-error", !!e.parseError), t.vdomEditor.classList.toggle("has-error", !!e.parseError), t.htmlEditorShell.classList.toggle("is-hidden", e.editorMode !== "html"), t.vdomEditorShell.classList.toggle("is-hidden", e.editorMode !== "vdom"), t.editorModeButtons.forEach((d) => {
-    d.classList.toggle("is-active", d.dataset.mode === e.editorMode), d.setAttribute("aria-pressed", String(d.dataset.mode === e.editorMode));
-  }), t.status.textContent = e.parseError || e.statusMessage, t.actualStats.innerHTML = `
-    <span>${r.totalNodes} nodes</span>
-    <span>${r.maxDepth} depth</span>
+function Q(t, e) {
+  const o = e.history[e.historyIndex] || $([]), a = e.parseError ? { effects: [] } : w(o, e.workingTree), i = a.effects.length ? a.effects : e.lastCommitEffects, d = a.effects.length ? "대기 중 Fiber Work" : "마지막 Commit 기록", s = f(o), r = f(e.workingTree), l = H(a.effects);
+  t.patchButton.disabled = !e.history.length || !!e.parseError, t.autoCommitToggle.checked = e.autoCommitEnabled, t.undoButton.disabled = e.historyIndex === 0, t.redoButton.disabled = e.historyIndex === e.history.length - 1, t.editor.classList.toggle("has-error", !!e.parseError), t.vdomEditor.classList.toggle("has-error", !!e.parseError), t.htmlEditorShell.classList.toggle("is-hidden", e.editorMode !== "html"), t.vdomEditorShell.classList.toggle("is-hidden", e.editorMode !== "vdom"), t.editorModal.classList.toggle("is-open", e.isEditorModalOpen), t.editorModal.setAttribute("aria-hidden", String(!e.isEditorModalOpen)), t.editorModeButtons.forEach((n) => {
+    n.classList.toggle("is-active", n.dataset.mode === e.editorMode), n.setAttribute("aria-pressed", String(n.dataset.mode === e.editorMode));
+  });
+  const g = e.editorMode === "html", O = g ? "HTML 크게 보기" : "가상 DOM(JSON) 크게 보기", D = g ? "샘플 HTML 코드" : "가상 DOM(JSON)", E = g ? t.editor.value : t.vdomEditor.value;
+  t.editorModalTitle.textContent = O, t.editorModalLabel.textContent = D, t.editorModalTextarea.value !== E && (t.editorModalTextarea.value = E), t.status.textContent = e.parseError || e.statusMessage, t.actualStats.innerHTML = `
+    <span>${s.totalNodes} nodes</span>
+    <span>${s.maxDepth} depth</span>
     <span>${e.historyIndex + 1}/${e.history.length || 1} history</span>
   `, t.testStats.innerHTML = `
-    <span>${l.totalNodes} nodes</span>
-    <span>${o.effects.length} pending effects</span>
+    <span>${r.totalNodes} nodes</span>
+    <span>${a.effects.length} pending effects</span>
     <span>${e.parseError ? "parse error" : "preview synced"}</span>
-  `, t.pendingStats.textContent = o.effects.length, t.effectMode.textContent = s, t.effectJsonMeta.textContent = `${i.length} effect objects`, t.insertStat.textContent = n.insert, t.removeStat.textContent = n.remove, t.moveStat.textContent = n.move, t.attrStat.textContent = n.attribute, t.textStat.textContent = n.text, t.effectCards.innerHTML = i.length ? i.map(z).join("") : C("Fiber queue", "현재 표시할 effect가 없습니다."), t.effectJson.textContent = JSON.stringify(i, null, 2), t.committedTree.innerHTML = f(a, 0), t.workingTree.innerHTML = f(e.workingTree, 0), t.historyList.innerHTML = e.historyMeta.map((d, g) => `
-      <button type="button" class="${g === e.historyIndex ? "history-item is-active" : "history-item"}" data-history-index="${g}">
-        <strong>#${g}</strong>
-        <span>${c(d.label)}</span>
-        <small>${d.effectCount} effects · ${T(d.timestamp)}</small>
+  `, t.pendingStats.textContent = a.effects.length, t.effectMode.textContent = d, t.effectJsonMeta.textContent = `${i.length} effect objects`, t.insertStat.textContent = l.insert, t.removeStat.textContent = l.remove, t.moveStat.textContent = l.move, t.attrStat.textContent = l.attribute, t.textStat.textContent = l.text, t.effectCards.innerHTML = i.length ? i.map(X).join("") : L("Fiber queue", "현재 표시할 effect가 없습니다."), t.effectJson.textContent = JSON.stringify(i, null, 2), t.committedTree.innerHTML = M(o, 0), t.workingTree.innerHTML = M(e.workingTree, 0), t.historyList.innerHTML = e.historyMeta.map((n, y) => `
+      <button type="button" class="${y === e.historyIndex ? "history-item is-active" : "history-item"}" data-history-index="${y}">
+        <strong>#${y}</strong>
+        <span>${c(n.label)}</span>
+        <small>${n.effectCount} effects · ${S(n.timestamp)}</small>
       </button>
-    `).join(""), t.mutationFeed.innerHTML = e.mutationFeed.length ? e.mutationFeed.map((d) => `
+    `).join(""), t.mutationFeed.innerHTML = e.mutationFeed.length ? e.mutationFeed.map((n) => `
         <div class="mutation-item">
-          <strong>${T(d.time)}</strong>
-          <span>${c(d.text)}</span>
+          <strong>${S(n.time)}</strong>
+          <span>${c(n.text)}</span>
         </div>
-      `).join("") : C("Mutation log", "Commit 또는 History 이동 후 실제 DOM 변경 기록이 여기에 쌓입니다.");
+      `).join("") : L("Mutation log", "Commit 또는 History 이동 후 실제 DOM 변경 기록이 여기에 쌓입니다.");
 }
-function z(t) {
+function X(t) {
   return `
     <article class="patch-item">
       <div class="patch-head">
         <span class="patch-type">${c(t.opType)}</span>
-        <span class="patch-path">${c(D(t.path || t.parentPath || []))}</span>
+        <span class="patch-path">${c(N(t.path || t.parentPath || []))}</span>
       </div>
-      <p>${c(A(t))}</p>
+      <p>${c(j(t))}</p>
       <div class="flag-chip-row">
         ${t.flagNames.map((e) => `<span class="flag-chip">${c(e)}</span>`).join("")}
       </div>
     </article>
   `;
 }
-function f(t, e) {
-  var s;
-  const a = I(t);
-  if (!((s = t.children) != null && s.length))
+function M(t, e) {
+  var d;
+  const o = J(t);
+  if (!((d = t.children) != null && d.length))
     return `
       <div class="tree-leaf">
-        <span class="tree-token is-${t.type}">${c(a)}</span>
+        <span class="tree-token is-${t.type}">${c(o)}</span>
       </div>
     `;
-  const o = e < 2 ? "open" : "", i = t.children.map((r) => f(r, e + 1)).join("");
+  const a = e < 2 ? "open" : "", i = t.children.map((s) => M(s, e + 1)).join("");
   return `
-    <details class="tree-node" ${o}>
+    <details class="tree-node" ${a}>
       <summary>
-        <span class="tree-token is-${t.type}">${c(a)}</span>
+        <span class="tree-token is-${t.type}">${c(o)}</span>
         <span class="tree-count">${t.children.length} children</span>
       </summary>
       <div class="tree-children">${i}</div>
     </details>
   `;
 }
-function C(t, e) {
+function L(t, e) {
   return `
     <div class="empty-state">
       <strong>${c(t)}</strong>
@@ -319,7 +336,7 @@ function C(t, e) {
     </div>
   `;
 }
-function K() {
+function Y() {
   return `
     <main class="app-shell">
       <section class="hero-section">
@@ -365,9 +382,12 @@ function K() {
             </div>
             <div class="editor-head-actions">
               <div class="mini-chip-row" data-role="test-stats"></div>
-              <div class="segmented-toggle" role="tablist" aria-label="Editor mode">
-                <button type="button" class="mode-button is-active" data-role="editor-mode-button" data-mode="html">HTML</button>
-                <button type="button" class="mode-button" data-role="editor-mode-button" data-mode="vdom">VDOM</button>
+              <div class="editor-toolbar">
+                <div class="segmented-toggle" role="tablist" aria-label="Editor mode">
+                  <button type="button" class="mode-button is-active" data-role="editor-mode-button" data-mode="html">HTML</button>
+                  <button type="button" class="mode-button" data-role="editor-mode-button" data-mode="vdom">VDOM</button>
+                </div>
+                <button type="button" class="secondary-button editor-expand-button" data-role="editor-expand-button">크게 보기</button>
               </div>
             </div>
           </header>
@@ -461,10 +481,27 @@ function K() {
           <div class="mutation-feed" data-role="mutation-feed"></div>
         </article>
       </section>
+
+      <div class="editor-modal" data-role="editor-modal" aria-hidden="true">
+        <div class="editor-modal-backdrop" data-role="editor-modal-backdrop"></div>
+        <section class="editor-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="editor-modal-title">
+          <header class="editor-modal-head">
+            <div>
+              <p class="panel-kicker">Expanded Editor</p>
+              <h2 id="editor-modal-title" data-role="editor-modal-title">HTML 크게 보기</h2>
+            </div>
+            <button type="button" class="secondary-button" data-role="editor-modal-close">닫기</button>
+          </header>
+          <label class="editor-modal-body">
+            <span data-role="editor-modal-label">샘플 HTML 코드</span>
+            <textarea spellcheck="false" data-role="editor-modal-textarea"></textarea>
+          </label>
+        </section>
+      </div>
     </main>
   `;
 }
-function W(t) {
+function G(t) {
   return {
     actual: t.querySelector('[data-role="actual-dom"]'),
     testPreview: t.querySelector('[data-role="test-preview"]'),
@@ -473,6 +510,13 @@ function W(t) {
     htmlEditorShell: t.querySelector('[data-role="html-editor-shell"]'),
     vdomEditorShell: t.querySelector('[data-role="vdom-editor-shell"]'),
     editorModeButtons: Array.from(t.querySelectorAll('[data-role="editor-mode-button"]')),
+    editorExpandButton: t.querySelector('[data-role="editor-expand-button"]'),
+    editorModal: t.querySelector('[data-role="editor-modal"]'),
+    editorModalBackdrop: t.querySelector('[data-role="editor-modal-backdrop"]'),
+    editorModalClose: t.querySelector('[data-role="editor-modal-close"]'),
+    editorModalTitle: t.querySelector('[data-role="editor-modal-title"]'),
+    editorModalLabel: t.querySelector('[data-role="editor-modal-label"]'),
+    editorModalTextarea: t.querySelector('[data-role="editor-modal-textarea"]'),
     patchButton: t.querySelector('[data-role="patch-button"]'),
     autoCommitToggle: t.querySelector('[data-role="auto-commit-toggle"]'),
     undoButton: t.querySelector('[data-role="undo-button"]'),
@@ -496,34 +540,34 @@ function W(t) {
     textStat: t.querySelector('[data-role="stat-text"]')
   };
 }
-function G(t) {
-  t.innerHTML = K();
-  const e = W(t), a = J(), o = () => U(e, a);
-  F({ refs: e, state: a, render: o }), R({ refs: e, state: a }), _({ refs: e, state: a, render: o }), o();
+function ot(t) {
+  t.innerHTML = Y();
+  const e = G(t), o = W(), a = () => Q(e, o);
+  _({ refs: e, state: o, render: a }), z({ refs: e, state: o }), K({ refs: e, state: o, render: a }), a();
 }
 export {
-  et as ChildDeletion,
-  at as NoFlags,
-  ot as Placement,
-  rt as Update,
+  it as ChildDeletion,
+  lt as NoFlags,
+  st as Placement,
+  dt as Update,
   u as cloneVNode,
-  $ as commitRoot,
-  M as countVNodeStats,
-  w as createRootVNode,
-  nt as domNodeToVNode,
+  q as commitRoot,
+  f as countVNodeStats,
+  $ as createRootVNode,
+  ut as domNodeToVNode,
   v as domNodeToVNodeTree,
-  D as formatFiberPath,
-  st as getFlagNames,
-  lt as getVNodeKey,
-  G as initApp,
+  N as formatFiberPath,
+  nt as getFlagNames,
+  mt as getVNodeKey,
+  ot as initApp,
   p as mountVNode,
-  P as parseHtmlToVNode,
-  O as parseVdomTextToVNode,
-  x as reconcileTrees,
-  dt as removeDomAttribute,
-  ct as renderVNode,
-  N as serializeVNodeToHtml,
-  q as serializeVNodeToText,
-  ut as setDomAttribute,
-  L as summarizeCommitOperations
+  V as parseHtmlToVNode,
+  P as parseVdomTextToVNode,
+  w as reconcileTrees,
+  pt as removeDomAttribute,
+  ht as renderVNode,
+  B as serializeVNodeToHtml,
+  A as serializeVNodeToText,
+  vt as setDomAttribute,
+  H as summarizeCommitOperations
 };

@@ -10,11 +10,16 @@ import {
 // 이전/다음 virtual DOM 트리를 비교해 실제 DOM은 건드리지 않고 work-in-progress fiber와 effect 큐를 만든다.
 
 /**
- * 두 virtual DOM 트리로부터 work-in-progress fiber 트리와 effect 큐를 만든다.
+ * 이전 트리와 다음 트리를 비교해, commit에 필요한 work-in-progress fiber와 effect queue를 생성한다.
  *
- * @param {object} previousTree - 이전에 commit된 virtual DOM 트리.
- * @param {object} nextTree - 새로 계산된 virtual DOM 트리.
- * @returns {{rootFiber: object, effects: object[]}} reconciliation 결과로 만들어진 루트 fiber와 선형 effect 큐.
+ * 이 단계에서는 실제 DOM을 수정하지 않고 어떤 변경이 필요한지만 계산한다.
+ * 반환값의 `effects`는 삽입, 삭제, 이동, 속성 변경, 텍스트 변경 같은 연산 목록이고,
+ * `rootFiber`는 commit 단계에서 참조할 연결 구조와 flag 정보를 함께 담는다.
+ * 즉, 이 함수는 "무엇이 바뀌어야 하는가"를 계산하는 reconciliation 진입점이다.
+ *
+ * @param {object} previousTree - 현재 화면에 commit되어 있다고 가정하는 이전 Virtual DOM 트리.
+ * @param {object} nextTree - 새로 반영하고 싶은 다음 Virtual DOM 트리.
+ * @returns {{rootFiber: object, effects: object[]}} commit 준비가 끝난 루트 fiber와 선형 effect 큐.
  */
 export function reconcileTrees(previousTree, nextTree) {
   const rootFiber = createFiber(nextTree, null, previousTree, 0, []);

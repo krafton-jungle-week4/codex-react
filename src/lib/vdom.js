@@ -73,11 +73,15 @@ export function cloneVNode(node) {
 }
 
 /**
- * HTML 문자열을 브라우저 파서로 읽어 내부 vnode 트리로 변환한다.
+ * HTML 문자열을 브라우저의 파서로 해석한 뒤, 이 프로젝트의 표준 Virtual DOM 구조로 변환한다.
+ *
+ * 문자열을 바로 정규화된 vnode 트리로 바꾸기 때문에 초기 샘플 마크업을 읽거나,
+ * textarea에 입력된 HTML을 working tree로 바꿀 때 사용한다. 반환값은 항상 내부 `root`
+ * 노드를 최상위로 가지는 트리이며, 이후 `reconcileTrees`의 입력으로 바로 넘길 수 있다.
  *
  * @param {string} html - 파싱할 HTML 문자열.
- * @param {Document} [doc=document] - template 생성에 사용할 문서 객체.
- * @returns {object} 루트 vnode 트리.
+ * @param {Document} [doc=document] - `template` 요소를 생성할 문서 객체. 테스트 환경이나 다른 document에서도 재사용할 수 있다.
+ * @returns {object} 내부 표준 형태로 정규화된 루트 vnode 트리.
  */
 export function parseHtmlToVNode(html, doc = document) {
   const template = doc.createElement('template');
@@ -127,10 +131,14 @@ export function domNodeToVNode(node) {
 }
 
 /**
- * 컨테이너의 현재 자식 DOM 전체를 루트 vnode 트리로 읽어온다.
+ * 특정 DOM 컨테이너의 "현재 브라우저 상태"를 기준으로 전체 자식 노드를 Virtual DOM으로 스냅샷한다.
+ *
+ * `parseHtmlToVNode`가 문자열 입력을 기준으로 한다면, 이 함수는 이미 렌더된 실제 DOM을 읽는다는 점이 다르다.
+ * 그래서 사용자가 직접 수정한 input value, checked 상태 같은 live DOM 값까지 반영한 트리를 얻을 수 있다.
+ * playground에서는 test preview와 actual DOM을 다시 기준선으로 삼을 때 이 함수를 사용한다.
  *
  * @param {Element} container - 스냅샷을 뜰 실제 DOM 컨테이너.
- * @returns {object} 루트 vnode 트리.
+ * @returns {object} 컨테이너의 현재 자식 구조를 반영한 루트 vnode 트리.
  */
 export function domNodeToVNodeTree(container) {
   return createRootVNode(
@@ -278,9 +286,13 @@ export function renderVNode(node, doc = document) {
 }
 
 /**
- * 컨테이너 내용을 vnode 기준으로 통째로 다시 그린다.
+ * 전달된 vnode 트리를 실제 DOM으로 렌더링해, 대상 컨테이너의 기존 내용을 통째로 교체한다.
  *
- * @param {Element} container - 교체 대상 DOM 컨테이너.
+ * 이 함수는 diff를 계산하지 않고 "현재 트리를 그대로 그린다"는 점이 핵심이다.
+ * 따라서 초기 마운트, history 점프, preview 즉시 동기화처럼 전체 상태를 다시 맞춰야 할 때 적합하다.
+ * 반대로 최소 변경만 반영하고 싶다면 `reconcileTrees`와 `commitRoot` 조합을 사용해야 한다.
+ *
+ * @param {Element} container - 렌더 결과로 교체할 DOM 컨테이너.
  * @param {object} node - 렌더링할 vnode 트리.
  * @returns {void}
  */
