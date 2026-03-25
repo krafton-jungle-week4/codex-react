@@ -8,19 +8,7 @@ export function getAppShell() {
   return `
     <main class="app-shell">
       <section class="hero-section">
-        <div>
-          <p class="eyebrow-badge">Vanilla JS Shell + Fiber Commit Engine</p>
-          <h1>Virtual DOM Diff Lab</h1>
-          <p class="hero-copy">
-            브라우저 DOM을 읽어 Virtual DOM으로 바꾸고, Fiber flags를 붙인 뒤 commit 단계에서 필요한 DOM 연산만 수행합니다.
-          </p>
-        </div>
-
-        <div class="hero-meta">
-          <span>Flags: Placement / Update / ChildDeletion</span>
-          <span>Commit phase only mutates the real DOM</span>
-          <span>Undo / Redo History</span>
-        </div>
+        <h1>Virtual DOM Diff Lab</h1>
       </section>
 
       <section class="control-bar">

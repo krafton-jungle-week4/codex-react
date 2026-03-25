@@ -1,6 +1,6 @@
-import { reconcileTrees as w, commitRoot as $, summarizeCommitOperations as L, formatFiberPath as D } from "./fiber.js";
+import { reconcileTrees as x, commitRoot as $, summarizeCommitOperations as L, formatFiberPath as D } from "./fiber.js";
 import { ChildDeletion as et, NoFlags as at, Placement as ot, Update as rt, getFlagNames as st } from "./fiber.js";
-import { domNodeToVNodeTree as v, cloneVNode as u, mountVNode as p, parseVdomTextToVNode as O, parseHtmlToVNode as P, serializeVNodeToHtml as N, serializeVNodeToText as q, createRootVNode as x, countVNodeStats as M } from "./vdom.js";
+import { domNodeToVNodeTree as v, cloneVNode as u, mountVNode as p, parseVdomTextToVNode as O, parseHtmlToVNode as P, serializeVNodeToHtml as N, serializeVNodeToText as q, createRootVNode as w, countVNodeStats as M } from "./vdom.js";
 import { domNodeToVNode as nt, getVNodeKey as lt, removeDomAttribute as dt, renderVNode as ct, setDomAttribute as ut } from "./vdom.js";
 const H = `
 <section class="demo-card" data-key="dashboard">
@@ -52,7 +52,7 @@ function T(t) {
 function c(t) {
   return String(t).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
-function F(t) {
+function A(t) {
   switch (t.opType) {
     case "INSERT_CHILD":
       return `index ${t.index} 위치에 새 노드를 삽입합니다.`;
@@ -70,10 +70,10 @@ function F(t) {
       return "설명할 수 없는 effect입니다.";
   }
 }
-function A(t) {
+function B(t) {
   return t.type === "attributes" ? `${t.attributeName} 속성이 변경되었습니다.` : t.type === "characterData" ? "텍스트 노드가 수정되었습니다." : `자식 노드 ${t.addedNodes.length}개 추가, ${t.removedNodes.length}개 제거`;
 }
-function B(t) {
+function I(t) {
   if (t.type === "root")
     return "root";
   if (t.type === "text")
@@ -82,13 +82,13 @@ function B(t) {
   return e ? `<${t.tag} ${e}>` : `<${t.tag}>`;
 }
 const b = 250;
-function I({ refs: t, state: e, render: a }) {
+function F({ refs: t, state: e, render: a }) {
   let o = null;
   const i = (s) => {
     s.target.closest('[data-role="sample-button"]') && j({ refs: t, state: e, render: a });
   };
   t.editor.addEventListener("input", () => {
-    C({
+    k({
       refs: t,
       state: e,
       render: a,
@@ -100,7 +100,7 @@ function I({ refs: t, state: e, render: a }) {
       }
     });
   }), t.vdomEditor.addEventListener("input", () => {
-    C({
+    k({
       refs: t,
       state: e,
       render: a,
@@ -143,7 +143,7 @@ function h({ refs: t, state: e, render: a, source: o }) {
   const i = e.history[e.historyIndex];
   if (!i || e.parseError)
     return;
-  const s = u(v(t.testPreview)), r = w(i, s);
+  const s = u(v(t.testPreview)), r = x(i, s);
   if (e.lastCommitEffects = r.effects, e.workingTree = u(s), o === "manual" && m(t, e, s), !r.effects.length) {
     e.statusMessage = o === "auto" ? "자동 commit을 확인했지만 반영할 변경점이 없습니다." : "변경점이 없어 commit 단계를 생략했습니다.", a();
     return;
@@ -194,7 +194,7 @@ function _({ refs: t, state: e, render: a }) {
     const s = i.map((r) => ({
       id: `${r.type}-${r.target.nodeName}-${Math.random().toString(16).slice(2)}`,
       time: Date.now(),
-      text: A(r)
+      text: B(r)
     }));
     s.length && (e.mutationFeed = [...s.reverse(), ...e.mutationFeed].slice(0, 14), a());
   }).observe(t.actual, {
@@ -210,7 +210,7 @@ function y(t, { refs: e, state: a, render: o }) {
   const i = u(a.history[t]);
   p(e.actual, i), p(e.testPreview, i), a.historyIndex = t, a.workingTree = i, a.parseError = "", a.lastCommitEffects = [], m(e, a, i), a.statusMessage = `히스토리 #${t} 상태로 이동했습니다.`, o();
 }
-function C({
+function k({
   refs: t,
   state: e,
   render: a,
@@ -243,7 +243,7 @@ function J() {
     history: [],
     historyMeta: [],
     historyIndex: 0,
-    workingTree: x([]),
+    workingTree: w([]),
     editorMode: "html",
     parseError: "",
     autoCommitEnabled: !1,
@@ -253,7 +253,7 @@ function J() {
   };
 }
 function U(t, e) {
-  const a = e.history[e.historyIndex] || x([]), o = e.parseError ? { effects: [] } : w(a, e.workingTree), i = o.effects.length ? o.effects : e.lastCommitEffects, s = o.effects.length ? "대기 중 Fiber Work" : "마지막 Commit 기록", r = M(a), l = M(e.workingTree), n = L(o.effects);
+  const a = e.history[e.historyIndex] || w([]), o = e.parseError ? { effects: [] } : x(a, e.workingTree), i = o.effects.length ? o.effects : e.lastCommitEffects, s = o.effects.length ? "대기 중 Fiber Work" : "마지막 Commit 기록", r = M(a), l = M(e.workingTree), n = L(o.effects);
   t.patchButton.disabled = !e.history.length || !!e.parseError, t.autoCommitToggle.checked = e.autoCommitEnabled, t.undoButton.disabled = e.historyIndex === 0, t.redoButton.disabled = e.historyIndex === e.history.length - 1, t.editor.classList.toggle("has-error", !!e.parseError), t.vdomEditor.classList.toggle("has-error", !!e.parseError), t.htmlEditorShell.classList.toggle("is-hidden", e.editorMode !== "html"), t.vdomEditorShell.classList.toggle("is-hidden", e.editorMode !== "vdom"), t.editorModeButtons.forEach((d) => {
     d.classList.toggle("is-active", d.dataset.mode === e.editorMode), d.setAttribute("aria-pressed", String(d.dataset.mode === e.editorMode));
   }), t.status.textContent = e.parseError || e.statusMessage, t.actualStats.innerHTML = `
@@ -264,7 +264,7 @@ function U(t, e) {
     <span>${l.totalNodes} nodes</span>
     <span>${o.effects.length} pending effects</span>
     <span>${e.parseError ? "parse error" : "preview synced"}</span>
-  `, t.pendingStats.textContent = o.effects.length, t.effectMode.textContent = s, t.effectJsonMeta.textContent = `${i.length} effect objects`, t.insertStat.textContent = n.insert, t.removeStat.textContent = n.remove, t.moveStat.textContent = n.move, t.attrStat.textContent = n.attribute, t.textStat.textContent = n.text, t.effectCards.innerHTML = i.length ? i.map(z).join("") : k("Fiber queue", "현재 표시할 effect가 없습니다."), t.effectJson.textContent = JSON.stringify(i, null, 2), t.committedTree.innerHTML = f(a, 0), t.workingTree.innerHTML = f(e.workingTree, 0), t.historyList.innerHTML = e.historyMeta.map((d, g) => `
+  `, t.pendingStats.textContent = o.effects.length, t.effectMode.textContent = s, t.effectJsonMeta.textContent = `${i.length} effect objects`, t.insertStat.textContent = n.insert, t.removeStat.textContent = n.remove, t.moveStat.textContent = n.move, t.attrStat.textContent = n.attribute, t.textStat.textContent = n.text, t.effectCards.innerHTML = i.length ? i.map(z).join("") : C("Fiber queue", "현재 표시할 effect가 없습니다."), t.effectJson.textContent = JSON.stringify(i, null, 2), t.committedTree.innerHTML = f(a, 0), t.workingTree.innerHTML = f(e.workingTree, 0), t.historyList.innerHTML = e.historyMeta.map((d, g) => `
       <button type="button" class="${g === e.historyIndex ? "history-item is-active" : "history-item"}" data-history-index="${g}">
         <strong>#${g}</strong>
         <span>${c(d.label)}</span>
@@ -275,7 +275,7 @@ function U(t, e) {
           <strong>${T(d.time)}</strong>
           <span>${c(d.text)}</span>
         </div>
-      `).join("") : k("Mutation log", "Commit 또는 History 이동 후 실제 DOM 변경 기록이 여기에 쌓입니다.");
+      `).join("") : C("Mutation log", "Commit 또는 History 이동 후 실제 DOM 변경 기록이 여기에 쌓입니다.");
 }
 function z(t) {
   return `
@@ -284,7 +284,7 @@ function z(t) {
         <span class="patch-type">${c(t.opType)}</span>
         <span class="patch-path">${c(D(t.path || t.parentPath || []))}</span>
       </div>
-      <p>${c(F(t))}</p>
+      <p>${c(A(t))}</p>
       <div class="flag-chip-row">
         ${t.flagNames.map((e) => `<span class="flag-chip">${c(e)}</span>`).join("")}
       </div>
@@ -293,7 +293,7 @@ function z(t) {
 }
 function f(t, e) {
   var s;
-  const a = B(t);
+  const a = I(t);
   if (!((s = t.children) != null && s.length))
     return `
       <div class="tree-leaf">
@@ -311,7 +311,7 @@ function f(t, e) {
     </details>
   `;
 }
-function k(t, e) {
+function C(t, e) {
   return `
     <div class="empty-state">
       <strong>${c(t)}</strong>
@@ -323,19 +323,7 @@ function K() {
   return `
     <main class="app-shell">
       <section class="hero-section">
-        <div>
-          <p class="eyebrow-badge">Vanilla JS Shell + Fiber Commit Engine</p>
-          <h1>Virtual DOM Diff Lab</h1>
-          <p class="hero-copy">
-            브라우저 DOM을 읽어 Virtual DOM으로 바꾸고, Fiber flags를 붙인 뒤 commit 단계에서 필요한 DOM 연산만 수행합니다.
-          </p>
-        </div>
-
-        <div class="hero-meta">
-          <span>Flags: Placement / Update / ChildDeletion</span>
-          <span>Commit phase only mutates the real DOM</span>
-          <span>Undo / Redo History</span>
-        </div>
+        <h1>Virtual DOM Diff Lab</h1>
       </section>
 
       <section class="control-bar">
@@ -511,7 +499,7 @@ function W(t) {
 function G(t) {
   t.innerHTML = K();
   const e = W(t), a = J(), o = () => U(e, a);
-  I({ refs: e, state: a, render: o }), R({ refs: e, state: a }), _({ refs: e, state: a, render: o }), o();
+  F({ refs: e, state: a, render: o }), R({ refs: e, state: a }), _({ refs: e, state: a, render: o }), o();
 }
 export {
   et as ChildDeletion,
@@ -521,7 +509,7 @@ export {
   u as cloneVNode,
   $ as commitRoot,
   M as countVNodeStats,
-  x as createRootVNode,
+  w as createRootVNode,
   nt as domNodeToVNode,
   v as domNodeToVNodeTree,
   D as formatFiberPath,
@@ -531,7 +519,7 @@ export {
   p as mountVNode,
   P as parseHtmlToVNode,
   O as parseVdomTextToVNode,
-  w as reconcileTrees,
+  x as reconcileTrees,
   dt as removeDomAttribute,
   ct as renderVNode,
   N as serializeVNodeToHtml,
